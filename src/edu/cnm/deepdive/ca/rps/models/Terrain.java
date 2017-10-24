@@ -24,15 +24,18 @@ public class Terrain {
   /** Default height and width of square lattice. */
   public static final int DEFAULT_SIZE = 50;
   /** Default number of iterationsPerStep performed in each high-level step of the system. */
-  public static final int DEFAULT_ITERATIONS_PER_STEP = 500;
+  public static final int DEFAULT_ITERATIONS_PER_STEP = 100;
   /** Default neighborhood type used in selecting pairs of adjacent {@link Breed} instances. */
   public static final Neighborhood DEFAULT_NEIGHBORHOOD = Neighborhood.VON_NEUMANN;
+
+  public static final int DEFAULT_MIXING_NUMBER = 0;
 
   private Breed[][] cells = null;
   private Random rng = new Random();
   private int size = DEFAULT_SIZE;
   private Neighborhood neighborhood = DEFAULT_NEIGHBORHOOD;
   private int iterationsPerStep = DEFAULT_ITERATIONS_PER_STEP;
+  private int mixing = DEFAULT_MIXING_NUMBER;
   private int steps;
   private long totalIterations;
 
@@ -60,7 +63,20 @@ public class Terrain {
     if (cells == null) {
       initialize();
     }
-    //TODO - Mix
+
+
+    if (getMixing() > DEFAULT_MIXING_NUMBER) {
+      for (int i = 0; i < getMixing(); i++) {
+        int[] firstPick = randomCell();
+        int[] secondPick = randomCell();
+          Breed intermediate = cells[firstPick[0]][firstPick[1]];
+          cells[firstPick[0]][firstPick[1]] =cells[secondPick[0]][secondPick[1]];
+          cells[secondPick[0]][secondPick[1]] = intermediate;
+
+        }
+      }
+
+
     for (int i = 0; i < iterationsPerStep; i++) {
       combat();
     }
@@ -245,4 +261,11 @@ public class Terrain {
 
   }
 
+  public int getMixing() {
+    return mixing;
+  }
+
+  public void setMixing(int mixing) {
+    this.mixing = mixing;
+  }
 }
